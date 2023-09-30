@@ -1,0 +1,151 @@
+## Criação de Políticas de Permissão
+
+1. Crie uma política de permissão para controlar o acesso às operações CRUD. Isso é fundamental para garantir que apenas os usuários autorizados possam executar essas ações.
+
+```bash copy
+php artisan make:policy ExemploPolicy
+```
+2. Abra o arquivo <strong>ExemploPolicy.php</strong> gerado e adicione a lógica de autorização para as operações CRUD. Um exemplo do formato do arquivo é fornecido abaixo:
+
+```php filename="ExemploPolicy.php" copy
+
+<?php
+
+namespace App\Policies;
+
+use App\Models\User;
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class ExemploPolicy
+{
+    use HandlesAuthorization;
+
+    /**
+     * Determine whether the user can view any models.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function viewAny(User $user)
+    {
+        return $user->hasPermission('exemplo_access');
+    }
+
+    /**
+     * Determine whether the user can view the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $model
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function view(User $user)
+    {
+        return $user->hasPermission('exemplo_show');
+    }
+
+    /**
+     * Determine whether the user can create models.
+     *
+     * @param  \App\Models\User  $user
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function create(User $user)
+    {
+        return $user->hasPermission('exemplo_create');
+    }
+
+    /**
+     * Determine whether the user can update the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $model
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function update(User $user)
+    {
+        return $user->hasPermission('exemplo_edit');
+    }
+
+    /**
+     * Determine whether the user can delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $model
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function delete(User $user)
+    {
+        return $user->hasPermission('exemplo_delete');
+    }
+
+    public function deleteAny(User $user)
+    {
+        return $user->hasPermission('exemplo_delete');
+    }
+
+    /**
+     * Determine whether the user can restore the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $model
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function restore(User $user)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can permanently delete the model.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\User  $model
+     * @return \Illuminate\Auth\Access\Response|bool
+     */
+    public function forceDelete(User $user)
+    {
+        //
+    }
+}
+?>
+```
+
+## Vinculando Políticas e Modelos
+
+1. Abra o arquivo <strong>AuthServiceProvider.php</strong> e adicione a declaração da política no array <strong>$policies</strong>, associando-a ao modelo correspondente:
+
+```php filename="AuthServiceProvider.php" copy
+    protected $policies = [
+      exemplo::class => ExemploPolicy::class
+    ];
+```
+
+## Definição das Permissões
+
+1. No arquivo <strong>PermissionsTableSeeder.php</strong>, adicione as permissões necessárias para controlar o acesso às operações CRUD:
+
+```php filename="PermissionsTableSeeder.php" copy
+
+    [
+        'title' => 'exemplo_create',
+    ],
+    [
+        'title' => 'exemplo_edit',
+    ],
+    [
+        'title' => 'exemplo_delete',
+    ],
+    [
+        'title' => 'exemplo_show',
+    ],
+    [
+        'title' => 'exemplo_access',
+    ],
+
+```
+import {Callout} from "nextra/components";
+
+<Callout type={"info"} emoji={"📜"}>
+    Isso completa a configuração necessária para criar operações CRUD em seu projeto usando a biblioteca CORS_W2O. Certifique-se de seguir esses passos corretamente para garantir a segurança e a eficácia das operações CRUD em seu aplicativo.
+</Callout>
+

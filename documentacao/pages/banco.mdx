@@ -1,0 +1,17 @@
+## Preparação do Banco de Dados
+
+1. Crie a migration e o modelo para o CRUD. Isso pode ser feito com o seguinte comando:
+
+```bash copy
+php artisan make:model exemplo -m
+```
+
+2. Atualize o arquivo de migration gerado para definir a estrutura do banco de dados para o CRUD.
+```bash copy
+php artisan migrate
+```
+3. <strong>Observação:</strong> Certifique-se de verificar se é necessário criar um seeder para a aplicação, a fim de inserir dados automaticamente.
+```bash copy
+php artisan db:seed
+```
+

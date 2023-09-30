@@ -1,0 +1,23 @@
+## Criando helper para input do form
+
+```php copy
+  TextInput::make('titulo')
+          ->hintIcon('heroicon-m-question-mark-circle',
+                        tooltip: function () {
+                            $result = DB::table('instrucao')
+                                ->where('alias', 'Titulo')
+                                ->value('texto');
+                            return $result ? $result : 'Tooltip content not available.';
+                        }
+                    )
+            ]),
+```
+
+## Query executada para função
+
+```php copy
+  DB::table('instrucao')
+    ->where('alias', 'Titulo')
+    ->value('texto');
+  return $result ? $result : 'Tooltip content not available.';
+```

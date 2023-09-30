@@ -1,0 +1,92 @@
+## Resources Filament
+
+Este guia oferece uma visão geral de como criar e gerenciar recursos, que são usados para construir interfaces CRUD para seus modelos Eloquent no painel de administração Filament.
+
+## Visão Geral
+
+Recursos no Filament são classes estáticas que definem como os administradores podem interagir com seus modelos Eloquent usando tabelas e formulários. Eles permitem que você gerencie os dados de sua aplicação de forma eficaz.
+
+## Criando um Recurso
+
+Para criar um recurso para o modelo <strong>App\Models\Customer</strong>, siga estas etapas:
+
+1. Execute o seguinte comando:
+
+```bash copy
+php artisan make:filament-resource Customer
+```
+2. Esse comando gera vários arquivos no diretório app/Filament/Resources:
+
+```bash
+.
++-- CustomerResource.php
++-- CustomerResource
+|   +-- Pages
+|   |   +-- CreateCustomer.php
+|   |   +-- EditCustomer.php
+|   |   +-- ListCustomers.php
+
+
+```
+3. O arquivo CustomerResource.php contém a classe do seu novo recurso. As classes no diretório Pages personalizam as páginas que interagem com o seu recurso.
+
+4. Se o recurso recém-criado não aparecer no menu de navegação, certifique-se de retornar true do método viewAny() na política do seu modelo.
+
+## Recursos Simples (Modais)
+
+Para modelos mais simples em que você gerencia registros usando modais, você pode gerar um recurso simples com modais usando a opção <strong>--simple</strong>:
+
+```bash copy
+php artisan make:filament-resource Customer --simple
+```
+Seu recurso simples terá uma página "Gerenciar", que é uma página de Listagem com modais para criar, editar e excluir registros.
+
+## Geração Automática de Formulários e Tabelas
+
+O Filament pode gerar formulários e tabelas com base nas colunas do banco de dados do seu modelo usando a opção <strong>--generate</strong>:
+
+```bash copy
+php artisan make:filament-resource Customer --generate
+```
+Observação: Se a tabela contiver colunas ENUM, o pacote <strong>doctrine/dbal</strong> usado pelo Filament pode causar falhas. Portanto, o Filament não gerará o esquema para recursos com colunas ENUM.
+
+## Lidando com Exclusões Suaves (Soft Deletes)
+
+Para adicionar funcionalidades de restauração, exclusão definitiva e filtragem de registros excluídos no seu recurso, use a opção <strong>--soft-deletes</strong>:
+
+```bash copy
+php artisan make:filament-resource Customer --soft-deletes
+```
+Para obter mais informações sobre exclusões suaves, consulte a documentação do Filament.
+
+## Gerando uma Página de Visualização
+
+Por padrão, o Filament gera páginas de Listagem, Criação e Edição para o seu recurso. Se você quiser incluir uma página de Visualização, use a opção <strong>--view</strong>:
+
+```bash copy
+php artisan make:filament-resource Customer --view
+```
+
+## Colocando o resource no navigation
+
+Para colocar o resource no menu de navegação, precisamos adicionar no `AdminPanelProvider.php` o `Resource::getNavigationItems()`:
+
+```php copy filename="AdminPanelProvider.php"
+NavigationGroup::make('Users')
+    ->items([
+        ...UserResource::getNavigationItems(),
+        ...RoleResource::getNavigationItems(),
+        ...PermissionResource::getNavigationItems(),
+
+
+    ]),
+```
+
+## Títulos de Registros
+
+Você pode definir um <strong>$recordTitleAttribute</strong> para o seu recurso, que é o nome da coluna em seu modelo usada para identificar registros. Por exemplo, isso pode ser o título de um post de blog ou o nome de um cliente:
+
+```php copy
+protected static ?string $recordTitleAttribute = 'name';
+```
+Este atributo é necessário para recursos como a pesquisa global funcionarem. Se uma única coluna não for suficiente para identificar um registro, você pode especificar o nome de um acessor Eloquent.
