@@ -12,10 +12,7 @@ class CreateUser extends CreateRecord
 {
     protected static string $resource = UserResource::class;
 
-    public function getFooter(): ?View
-    {
-        return view('filament.pages.footer');
-    }
+
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {

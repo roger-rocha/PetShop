@@ -19,7 +19,7 @@ class PermissionResource extends Resource
 
     protected static ?string $modelLabel = 'Permissões';
 
-    protected static ?string $navigationGroup = 'W2O';
+    protected static ?string $navigationGroup = 'Admin';
 
     public static function form(Form $form): Form
     {
@@ -78,8 +78,5 @@ class PermissionResource extends Resource
         ];
     }
 
-    public function getFooter(): ?View
-    {
-        return view('filament.pages.footer');
-    }
+
 }

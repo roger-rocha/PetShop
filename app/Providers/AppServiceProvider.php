@@ -4,6 +4,9 @@ namespace App\Providers;
 
 use Filament\Forms\Components\DatePicker;
 use Illuminate\Support\ServiceProvider;
+use Filament\Notifications\Notification;
+use Filament\Pages\Page;
+use Illuminate\Validation\ValidationException;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +28,14 @@ class AppServiceProvider extends ServiceProvider
             $datePicker->native(false);
             $datePicker->firstDayOfWeek(7);
         });
+
+        Page::$reportValidationErrorUsing = function (ValidationException $exception) {
+            Notification::make()
+                ->title('Erro de validação')
+                ->body($exception->getMessage())
+                ->danger()
+                ->color("danger")
+                ->send();
+        };
     }
 }

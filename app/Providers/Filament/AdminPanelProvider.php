@@ -5,6 +5,7 @@ namespace App\Providers\Filament;
 use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\Auth\ResetPassword;
+use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -32,6 +33,7 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->favicon(asset('images/favicon.png'))
             ->path('')
+            ->brandName("PetShop")
             ->login(Login::class)
             ->profile(EditProfile::class)
             ->sidebarCollapsibleOnDesktop()
@@ -65,6 +67,7 @@ class AdminPanelProvider extends PanelProvider
                     ->visible(fn () => app()->environment(['local', 'testing', 'hml', 'homologacao', 'staging', 'development']))
                     ->showBorder(false)
                     ->visible(true),
+                FilamentExceptionsPlugin::make()
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -91,8 +94,10 @@ class AdminPanelProvider extends PanelProvider
             ->authPasswordBroker('users')
             ->navigationGroups([
                 'Usuários',
-                'W2O',
+                'Admin',
             ])
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('30s')
             ->userMenuItems([
                 MenuItem::make()
                     ->label('Release')
@@ -102,8 +107,5 @@ class AdminPanelProvider extends PanelProvider
             ]);
     }
 
-    public function getFooter(): ?View
-    {
-        return view('filament.pages.footer');
-    }
+
 }

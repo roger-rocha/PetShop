@@ -19,7 +19,7 @@ class InstrucaoResource extends Resource
 
     protected static ?string $modelLabel = 'Instruções';
 
-    protected static ?string $navigationGroup = 'W2O';
+    protected static ?string $navigationGroup = 'Admin';
 
     public static function form(Form $form): Form
     {

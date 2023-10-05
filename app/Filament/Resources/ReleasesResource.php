@@ -21,7 +21,7 @@ class ReleasesResource extends Resource
 
     protected static ?int $navigationSort = 0;
 
-    protected static ?string $navigationGroup = 'W2O';
+    protected static ?string $navigationGroup = 'Admin';
 
     public static function form(Form $form): Form
     {

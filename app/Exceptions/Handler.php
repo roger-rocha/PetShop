@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use BezhanSalleh\FilamentExceptions\FilamentExceptions;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -30,7 +31,9 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
+            if ($this->shouldReport($e)) {
+                FilamentExceptions::report($e);
+            }
         });
     }
 

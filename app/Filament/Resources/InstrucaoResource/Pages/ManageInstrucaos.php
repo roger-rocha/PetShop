@@ -20,8 +20,5 @@ class Manageinstrucaos extends ManageRecords
         ];
     }
 
-    public function getFooter(): ?View
-    {
-        return view('filament.pages.footer');
-    }
+
 }

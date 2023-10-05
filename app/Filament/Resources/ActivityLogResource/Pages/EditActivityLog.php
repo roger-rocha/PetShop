@@ -27,10 +27,7 @@ class EditActivityLog extends EditRecord
         return $data;
     }
 
-    public function getFooter(): ?View
-    {
-        return view('filament.pages.footer');
-    }
+
 
     protected function getFormActions(): array
     {

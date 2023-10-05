@@ -37,6 +37,9 @@ class UserResource extends Resource
 
     protected static ?string $navigationGroup = 'Usuários';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
+
     public static function form(Form $form): Form
     {
         function getAvatarInput(): component
@@ -63,21 +66,13 @@ class UserResource extends Resource
                             ->maxLength(255),
                         TextInput::make('email')->label('Email')->unique(ignoreRecord: true)
                             ->email()
-                            ->required()
+                            ->require()
                             ->maxLength(255),
                         TextInput::make('telefone')->unique(ignoreRecord: true)
                             ->label('Telefone')
-                            ->tel()
-                            ->telRegex('/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\.\/0-9]*$/')
                             ->required()
-                            ->maxValue(14)
-                            ->maxLength(14)
-                            ->minValue(11)
-                            ->minLength(11)
-                            ->placeholder('(DDD) + Numero')
-                            ->mask(RawJs::make(<<<'JS'
-                            $input.startsWith('11') || $input.startsWith('11') ?  '(99)99999-9999' :  '(99)99999-9999'
-                        JS)),
+                            ->mask("(99) 99999-9999")
+                            ->placeholder("(99) 99999-9999")
                     ]),
             ]);
         }
