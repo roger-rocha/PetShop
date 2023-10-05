@@ -4,6 +4,9 @@ namespace App\Providers\Filament;
 
 use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Auth\Login;
+use App\Filament\Pages\Tenancy\EditTeamProfile;
+use App\Filament\Pages\Tenancy\RegisterTeam;
+use App\Models\Loja;
 use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -33,6 +36,9 @@ class AdminPanelProvider extends PanelProvider
             ->favicon(asset('images/favicon.png'))
             ->path('')
             ->brandName("PetShop")
+            ->tenant(Loja::class)
+            ->tenantRegistration(RegisterTeam::class)
+            ->tenantProfile(EditTeamProfile::class)
             ->login(Login::class)
             ->profile(EditProfile::class)
             ->sidebarCollapsibleOnDesktop()
@@ -63,7 +69,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 EnvironmentIndicatorPlugin::make()
-                    ->visible(fn () => app()->environment(['local', 'testing', 'hml', 'homologacao', 'staging', 'development']))
+                    ->visible(fn() => app()->environment(['local', 'testing', 'hml', 'homologacao', 'staging', 'development']))
                     ->showBorder(false)
                     ->visible(true),
                 FilamentExceptionsPlugin::make(),

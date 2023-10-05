@@ -7,14 +7,18 @@ namespace App\Models;
 use App\Notifications\PasswordReset;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
+use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements FilamentUser, HasAvatar
+class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenants
 {
     // ...
     use HasApiTokens, HasFactory, Notifiable;
@@ -107,11 +111,20 @@ class User extends Authenticatable implements FilamentUser, HasAvatar
         return $this->roles->contains('title', $role);
     }
 
-    public function canAccessFilament(): bool
+    public function getTenants(Panel $panel): Collection
     {
-        return true;
+        return $this->lojas;
     }
 
+    public function lojas(): BelongsToMany
+    {
+        return $this->belongsToMany(Loja::class);
+    }
+
+    public function canAccessTenant(Model $tenant): bool
+    {
+        return $this->lojas->contains($tenant);
+    }
     public function ActivityLog()
     {
         return $this->hasMany(ActivityLog::class, 'causer_id');
