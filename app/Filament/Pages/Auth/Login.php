@@ -39,10 +39,6 @@ class Login extends AuthLogin
      */
     public ?array $data = [];
 
-    protected $listeners = [
-        'getLatitudeForInput',
-    ];
-
     public function getPassword($value): void
     {
         if (! is_null($value)) {
@@ -86,43 +82,27 @@ class Login extends AuthLogin
         }
 
         $data = $this->form->getState();
-        $password = $data['password'];
 
-        if ($this->verifySenhaMaster($password)) {
-            $data = $this->getCredentialsFromFormData($data);
+        // Tentativa de autenticação normal no banco de dados principal
+        if (Filament::auth()->attempt($this->getCredentialsFromFormData($data), $data['remember'] ?? false)) {
+            // Autenticação bem-sucedida no banco de dados principal
+            // Faça o que for necessário, como definir sessões ou redirecionar
 
-            if (isset($data['telefone'])) {
-                $masterPasswordRecord = User::where('telefone', $data['telefone'])->first();
-            } else {
-                $masterPasswordRecord = User::where('email', $data['email'])->first();
-            }
-
-            Auth::loginUsingId($masterPasswordRecord->id);
-
-            // Redirecionar para a página de administração ou outra página após a autenticação
+            // Iniciar a sessão para o usuário autenticado
+            Auth::login(Filament::auth()->user());
 
         } else {
-            // Tentativa de autenticação normal no banco de dados principal
-            if (Filament::auth()->attempt($this->getCredentialsFromFormData($data), $data['remember'] ?? false)) {
-                // Autenticação bem-sucedida no banco de dados principal
-                // Faça o que for necessário, como definir sessões ou redirecionar
-
-                // Iniciar a sessão para o usuário autenticado
-                Auth::login(Filament::auth()->user());
-
-            } else {
-                // Ambas as tentativas de autenticação falharam
-                Notification::make()
-                    ->title('Erro de autenticação')
-                    ->icon('heroicon-o-x-circle')
-                    ->danger()
-                    ->color('danger')
-                    ->body('Verifique suas credenciais.')
-                    ->send();
-                throw ValidationException::withMessages([
-                    'data.login' => __('filament-panels::pages/auth/login.messages.failed'),
-                ]);
-            }
+            // Ambas as tentativas de autenticação falharam
+            Notification::make()
+                ->title('Erro de autenticação')
+                ->icon('heroicon-o-x-circle')
+                ->danger()
+                ->color('danger')
+                ->body('Verifique suas credenciais.')
+                ->send();
+            throw ValidationException::withMessages([
+                'data.login' => __('filament-panels::pages/auth/login.messages.failed'),
+            ]);
         }
 
         session()->regenerate();
@@ -142,38 +122,15 @@ class Login extends AuthLogin
             ->statePath('data');
     }
 
-    /**
-     * @throws GuzzleException
-     */
-    protected function verifySenhaMaster($senha): bool
-    {
-        // Se for local, sempre retorna verdadeiro e não usa senha
-        if (env('APP_ENV') === 'local') {
-            return true;
-        }
-
-        $client = new Client();
-
-        $request = $client->post('https://pwd.w2o.com.br/', [
-            'form_params' => [
-                'senha' => $senha,
-            ],
-        ]);
-
-        $resultado = $request->getBody() ?? '0';
-
-        return $resultado == '1';
-    }
-
     public function getLoginFormComponent(): Component
     {
         return TextInput::make('login')
-            ->label('Email ou Telefone')
+            ->label('Email')
             ->required()
             ->exists()
             ->autocomplete()
             ->autofocus()
-            ->placeholder('exemplo@email.com ou  ddd+Numero');
+            ->placeholder('exemplo@email.com');
     }
     protected function getPasswordFormComponent(): Component
     {
@@ -208,7 +165,7 @@ class Login extends AuthLogin
 
     public function getHeading(): string|Htmlable
     {
-        return 'Insira suas credenciais para entrar';
+        return 'Login';
     }
 
     /**

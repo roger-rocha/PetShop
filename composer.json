@@ -21,6 +21,7 @@
         "psr/simple-cache": "^2.0",
         "pxlrbt/filament-environment-indicator": "dev-main",
         "pxlrbt/filament-excel": "^2.1",
+        "shuvroroy/filament-spatie-laravel-backup": "^2.0",
         "spatie/laravel-permission": "^5.10",
         "z3d0x/filament-logger": "^0.6.0"
     },
