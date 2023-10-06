@@ -35,6 +35,11 @@ class Loja extends Model implements HasCurrentTenantLabel
         return $this->hasMany(Paciente::class);
     }
 
+    public function produtos(): HasMany
+    {
+        return $this->hasMany(Produto::class);
+    }
+
     public function getFilamentAvatarUrl(): ?string
     {
         return $this->avatar_url;
