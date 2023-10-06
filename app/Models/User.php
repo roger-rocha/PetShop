@@ -84,12 +84,12 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenant
         'email_verified_at' => 'datetime',
     ];
 
-    public function roles()
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class);
     }
 
-    public function permissions()
+    public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(Permission::class);
     }
