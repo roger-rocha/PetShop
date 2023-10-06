@@ -15,7 +15,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Resources\Resource;
-use Filament\Support\RawJs;
 use Filament\Tables;
 use Filament\Tables\Actions\Action as ActionsAction;
 use Filament\Tables\Actions\ActionGroup;
@@ -30,15 +29,11 @@ use Illuminate\Support\Facades\Hash;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-
+    protected static ?string $tenantOwnershipRelationshipName = 'lojas';
     protected static ?string $navigationIcon = 'heroicon-o-user';
-
     protected static ?string $modelLabel = 'Usuários';
-
     protected static ?string $navigationGroup = 'Usuários';
-
     protected static ?string $recordTitleAttribute = 'name';
-
 
     public static function form(Form $form): Form
     {
@@ -76,6 +71,7 @@ class UserResource extends Resource
                     ]),
             ]);
         }
+
         function getPasswordInput(): component
         {
             return Section::make('Dados de Acesso')
@@ -99,16 +95,16 @@ class UserResource extends Resource
                                 ->password()
                                 ->nullable()
                                 ->confirmed()
-                                ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
-                                ->dehydrated(fn (?string $state): bool => filled($state))
-                                ->required(fn (string $context): bool => $context === 'create')
+                                ->dehydrateStateUsing(fn(string $state): string => Hash::make($state))
+                                ->dehydrated(fn(?string $state): bool => filled($state))
+                                ->required(fn(string $context): bool => $context === 'create')
                                 ->rules([
                                     'min:8',
                                     'string',
                                     'confirmed', // Campo de confirmação da senha
                                     'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]+$/',
                                 ])
-                                ->autocomplete(false)->disabled(fn (Get $get): bool => ! $get('passwordDisable'))->hintIcon(
+                                ->autocomplete(false)->disabled(fn(Get $get): bool => !$get('passwordDisable'))->hintIcon(
                                     'heroicon-m-question-mark-circle',
                                     tooltip: function () {
                                         $result = DB::table('instrucao')
@@ -124,15 +120,16 @@ class UserResource extends Resource
                                 ->placeholder('*********')
                                 ->password()
                                 ->label('Confirmar senha')
-                                ->required(fn (string $context): bool => $context === 'create')
+                                ->required(fn(string $context): bool => $context === 'create')
                                 ->rules([
                                     'min:8',
                                 ])
-                                ->autocomplete(false)->disabled(fn (Get $get): bool => ! $get('passwordDisable')),
+                                ->autocomplete(false)->disabled(fn(Get $get): bool => !$get('passwordDisable')),
                         ]),
                     ]),
                 ]);
         }
+
         function getPermissaoInput(): component
         {
             return Section::make('Permissões menu')
@@ -142,7 +139,7 @@ class UserResource extends Resource
                         ->relationship(
                             name: 'roles',
                             titleAttribute: 'title',
-                            modifyQueryUsing: fn (Builder $query) => Auth()->user()->hasRole('Super') ? null : $query->where('title', '!=', 'Inativo')->where('title', '!=', 'Super'),
+                            modifyQueryUsing: fn(Builder $query) => Auth()->user()->hasRole('Super') ? null : $query->where('title', '!=', 'Inativo')->where('title', '!=', 'Super'),
                         ),
                     Select::make('status')
                         ->native(false)
@@ -155,15 +152,15 @@ class UserResource extends Resource
 
         return $form
             ->schema([
-                getAvatarInput()->disabled(fn (Get $get) => $get('Permissão')[0] == '1' && ! Auth()->user()->hasRole('Super'))->visibleOn('edit'),
+                getAvatarInput()->disabled(fn(Get $get) => $get('Permissão')[0] == '1' && !Auth()->user()->hasRole('Super'))->visibleOn('edit'),
                 getAvatarInput()->visibleOn('create'),
                 getInformacaoPessoal()->visibleOn('create'),
-                getInformacaoPessoal()->disabled(fn (Get $get) => $get('Permissão')[0] == '1' && ! Auth()->user()->hasRole('Super'))->visibleOn('edit'),
+                getInformacaoPessoal()->disabled(fn(Get $get) => $get('Permissão')[0] == '1' && !Auth()->user()->hasRole('Super'))->visibleOn('edit'),
                 Group::make([
-                    getPasswordInput()->visibleOn('edit')->disabled(fn (Get $get) => $get('Permissão')[0] == '1' && ! Auth()->user()->hasRole('Super')),
+                    getPasswordInput()->visibleOn('edit')->disabled(fn(Get $get) => $get('Permissão')[0] == '1' && !Auth()->user()->hasRole('Super')),
                     getPasswordInput()->visibleOn('create'),
                 ]),
-                getPermissaoInput()->disabled(fn (Get $get) => $get('Permissão')[0] == '1' && ! Auth()->user()->hasRole('Super'))->visibleOn('edit'),
+                getPermissaoInput()->disabled(fn(Get $get) => $get('Permissão')[0] == '1' && !Auth()->user()->hasRole('Super'))->visibleOn('edit'),
                 getPermissaoInput()->visibleOn('create'),
             ]);
     }
@@ -178,17 +175,25 @@ class UserResource extends Resource
                     ->label('Foto')
                     ->disk('local')
                     ->circular(),
-                TextColumn::make('name')->label('Nome')
-                    ->searchable()->sortable(),
-                TextColumn::make('email')->label('Email')
-                    ->searchable()->sortable(),
-                TextColumn::make('telefone')->label('Telefone')
-                    ->searchable()->sortable(),
-                TextColumn::make('roles.title')->label('Função')
-                    ->searchable()->sortable(),
+                TextColumn::make('name')
+                    ->label('Nome')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('telefone')
+                    ->label('Telefone')
+                    ->searchable()
+                    ->sortable(),
+                TextColumn::make('roles.title')
+                    ->label('Função')
+                    ->searchable()
+                    ->sortable(),
                 TextColumn::make('status')
                     ->badge()
-                    ->color(fn (string $state): string => match ($state) {
+                    ->color(fn(string $state): string => match ($state) {
                         'Ativo' => 'success',
                         'Inativo' => 'danger',
                     }),
@@ -220,7 +225,7 @@ class UserResource extends Resource
                             $user->save();
                         })->hidden(function (User $user) {
                             return $user->status == 'Inativo';
-                        })->disabled(! Auth()->user()->hasPermission('user_status_edit')),
+                        })->disabled(!Auth()->user()->hasPermission('user_status_edit')),
 
                     ActionsAction::make('Ativar')
                         ->icon('heroicon-o-check-circle')
@@ -231,9 +236,9 @@ class UserResource extends Resource
                             $user->save();
                         })->hidden(function (User $user) {
                             return $user->status != 'Inativo';
-                        })->disabled(! Auth()->user()->hasPermission('user_status_edit')),
+                        })->disabled(!Auth()->user()->hasPermission('user_status_edit')),
 
-                    DeleteAction::make()->hidden(! Auth()->user()->hasRole('Super')),
+                    DeleteAction::make()->hidden(!Auth()->user()->hasRole('Super')),
                 ]),
             ])
             ->bulkActions([

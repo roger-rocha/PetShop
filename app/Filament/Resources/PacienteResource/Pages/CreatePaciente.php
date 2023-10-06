@@ -4,6 +4,7 @@ namespace App\Filament\Resources\PacienteResource\Pages;
 
 use App\Filament\Resources\PacienteResource;
 use Filament\Facades\Filament;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreatePaciente extends CreateRecord
@@ -15,5 +16,18 @@ class CreatePaciente extends CreateRecord
         $data['loja_id'] = Filament::getTenant()->id;
 
         return $data;
+    }
+
+    protected function getCreatedNotification(): ?Notification
+    {
+        $recipient = auth()->user();
+
+        return Notification::make()
+            ->success()
+            ->title('Paciente criado')
+            ->color("success")
+            ->body('Paciente foi criado com sucesso!')
+            ->send()
+            ->sendToDatabase($recipient);
     }
 }

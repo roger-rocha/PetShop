@@ -17,8 +17,8 @@ class UsersTableSeeder extends Seeder
         $users = [
             [
 
-                'name' => 'SUPORTE W2O',
-                'email' => 'suporte@w2o.com.br',
+                'name' => 'SUPORTE ADMIN',
+                'email' => 'admin@petsho.com.br',
                 'password' => bcrypt('123456'),
                 'telefone' => '21985852845',
 
