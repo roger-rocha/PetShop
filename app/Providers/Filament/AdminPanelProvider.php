@@ -23,6 +23,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Maartenpaauw\Filament\Cashier\Stripe\BillingProvider;
 use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
 use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
 
@@ -39,6 +40,8 @@ class AdminPanelProvider extends PanelProvider
             ->tenant(Loja::class)
             ->tenantRegistration(RegisterTeam::class)
             ->tenantProfile(EditTeamProfile::class)
+            ->tenantBillingProvider(new BillingProvider('basic'))
+            //->requiresTenantSubscription()
             ->login(Login::class)
             ->profile(EditProfile::class)
             ->sidebarCollapsibleOnDesktop()

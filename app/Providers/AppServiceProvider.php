@@ -2,11 +2,13 @@
 
 namespace App\Providers;
 
+use App\Models\Loja;
 use Filament\Forms\Components\DatePicker;
-use Illuminate\Support\ServiceProvider;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\ValidationException;
+use Laravel\Cashier\Cashier;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Cashier::useCustomerModel(Loja::class);
+
         DatePicker::configureUsing(function (DatePicker $datePicker): void {
             $datePicker->displayFormat('d/m/Y');
             $datePicker->native(false);

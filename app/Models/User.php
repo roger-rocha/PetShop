@@ -26,7 +26,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenant
     /**
      * Send the password reset notification.
      *
-     * @param  string  $token
+     * @param string $token
      * @return void
      */
     public function sendPasswordResetNotification($token)
@@ -43,6 +43,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenant
     {
         return $this->name;
     }
+
     // ...
 
     public function canAccessPanel(Panel $panel): bool
@@ -125,6 +126,7 @@ class User extends Authenticatable implements FilamentUser, HasAvatar, HasTenant
     {
         return $this->lojas->contains($tenant);
     }
+
     public function ActivityLog()
     {
         return $this->hasMany(ActivityLog::class, 'causer_id');
