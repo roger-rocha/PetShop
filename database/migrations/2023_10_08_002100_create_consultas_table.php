@@ -14,6 +14,7 @@ return new class extends Migration {
         Schema::create('consulta', function (Blueprint $table) {
             $table->id();
             $table->foreignIdFor(Loja::class, 'loja_id')->constrained("loja")->cascadeOnDelete();
+            $table->foreignId('paciente_id')->constrained("paciente")->cascadeOnDelete();
             $table->string('nome');
             $table->dateTime('data');
             $table->longText('descricao');

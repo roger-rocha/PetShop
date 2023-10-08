@@ -58,6 +58,7 @@ class ProdutoResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make("preco")
                     ->label('Preço')
+                    ->formatStateUsing(fn(string $state): string => 'R$ ' . number_format($state, 2, ',', '.'))
                     ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make("quantidade")

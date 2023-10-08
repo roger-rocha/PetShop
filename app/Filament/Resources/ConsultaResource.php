@@ -5,10 +5,13 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\ConsultaResource\Pages;
 use App\Filament\Resources\ConsultaResource\RelationManagers;
 use App\Models\Consulta;
+use App\Models\Paciente;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -30,10 +33,17 @@ class ConsultaResource extends Resource
             ->schema([
                 Section::make("Dados Cadastrais")
                     ->schema([
-                        Grid::make()
+                        Grid::make(3)
                             ->schema([
                                 TextInput::make('nome')
                                     ->label("Nome")
+                                    ->required(),
+                                Select::make('paciente_id')
+                                    ->label("Pet")
+                                    ->searchable()
+                                    ->preload()
+                                    ->native(false)
+                                    ->options(Paciente::query()->where('loja_id', Filament::getTenant()->id)->pluck('nome', 'id'))
                                     ->required(),
                                 DateTimePicker::make('data')
                                     ->native(false)
@@ -54,6 +64,10 @@ class ConsultaResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('nome')
                     ->label("Nome")
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('paciente.nome')
+                    ->label("Pet")
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('data')

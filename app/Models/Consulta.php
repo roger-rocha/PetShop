@@ -16,11 +16,17 @@ class Consulta extends Model
         'nome',
         'data',
         'descricao',
-        'loja_id'
+        'loja_id',
+        'paciente_id'
     ];
 
     public function loja(): BelongsTo
     {
         return $this->belongsTo(Loja::class);
+    }
+
+    public function paciente(): BelongsTo
+    {
+        return $this->belongsTo(Paciente::class);
     }
 }
