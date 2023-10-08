@@ -9,6 +9,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Leandrocfe\FilamentPtbrFormFields\Money;
 
 
 class ProdutoResource extends Resource
@@ -16,6 +17,7 @@ class ProdutoResource extends Resource
     protected static ?string $model = Produto::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
+    protected static ?string $navigationGroup = 'Produtos';
 
     public static function form(Form $form): Form
     {
@@ -26,15 +28,18 @@ class ProdutoResource extends Resource
                         Forms\Components\TextInput::make("nome")
                             ->label("Nome")
                             ->required(),
-                        Forms\Components\TextInput::make("descricao")
+                        Forms\Components\RichEditor::make("descricao")
                             ->label("Descrição")
                             ->required(),
-                        Forms\Components\TextInput::make("preco")
-                            ->label("Preço")
-                            ->required(),
-                        Forms\Components\TextInput::make("quantidade")
-                            ->label("Quantidade")
-                            ->required(),
+                        Forms\Components\Grid::make()->schema([
+                            Money::make("preco")
+                                ->label("Preço")
+                                ->required(),
+                            Forms\Components\TextInput::make("quantidade")
+                                ->label("Quantidade")
+                                ->required(),
+                        ])
+
                     ])
             ]);
     }
@@ -65,6 +70,11 @@ class ProdutoResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+            ])
+            ->emptyStateDescription("Não há nenhum produto cadastrado")
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make()
+                    ->label("Novo Produto")
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

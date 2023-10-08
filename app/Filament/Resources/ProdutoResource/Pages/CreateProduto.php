@@ -3,15 +3,18 @@
 namespace App\Filament\Resources\ProdutoResource\Pages;
 
 use App\Filament\Resources\ProdutoResource;
-use App\Models\Produto;
-use Filament\Actions;
 use Filament\Facades\Filament;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class CreateProduto extends CreateRecord
 {
     protected static string $resource = ProdutoResource::class;
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 
     protected function mutateFormDataBeforeCreate(array $data): array
     {
@@ -20,7 +23,13 @@ class CreateProduto extends CreateRecord
         return $data;
     }
 
-    public function produto(): HasMany {
-        return $this->hasMany(Produto::class);
+    protected function getCreatedNotification(): ?Notification
+    {
+        return Notification::make()
+            ->success()
+            ->color("success")
+            ->title('Produto criado')
+            ->body('Produto foi criado com sucesso!')
+            ->sendToDatabase(auth()->user());
     }
 }

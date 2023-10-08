@@ -98,6 +98,9 @@ class AdminPanelProvider extends PanelProvider
             ->authGuard('web')
             ->authPasswordBroker('users')
             ->navigationGroups([
+                'Pets',
+                'Produtos',
+                'Financeiro',
                 'Usuários',
             ])
             ->databaseNotifications()

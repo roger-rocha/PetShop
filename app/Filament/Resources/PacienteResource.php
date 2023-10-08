@@ -14,7 +14,13 @@ use Filament\Tables\Table;
 class PacienteResource extends Resource
 {
     protected static ?string $model = Paciente::class;
+    protected static ?string $navigationLabel = 'Pets';
+
+    protected static ?string $label = 'Pets';
+    protected static ?string $pluralLabel = 'Pets';
+
     protected static ?string $navigationIcon = 'heroicon-o-heart';
+    protected static ?string $navigationGroup = 'Pets';
 
     public static function form(Form $form): Form
     {
@@ -22,21 +28,24 @@ class PacienteResource extends Resource
             ->schema([
                 Forms\Components\Section::make("Dados Cadastrais")
                     ->schema([
-                        Forms\Components\TextInput::make("nome")
-                            ->label("Nome")
-                            ->required(),
-                        Forms\Components\DatePicker::make("data_nascimento")
-                            ->label("Data de Nascimento")
-                            ->displayFormat("d/m/Y")
-                            ->native(false)
-                            ->required(),
-                        Forms\Components\Select::make("tipo")
-                            ->native(false)
-                            ->preload()
-                            ->options([
-                                "cachorro" => "Cachorro",
-                                "gato" => "Gato",
-                                "passaro" => "Pássaro"
+                        Forms\Components\Grid::make(3)
+                            ->schema([
+                                Forms\Components\TextInput::make("nome")
+                                    ->label("Nome")
+                                    ->required(),
+                                Forms\Components\DatePicker::make("data_nascimento")
+                                    ->label("Data de Nascimento")
+                                    ->displayFormat("d/m/Y")
+                                    ->native(false)
+                                    ->required(),
+                                Forms\Components\Select::make("tipo")
+                                    ->native(false)
+                                    ->preload()
+                                    ->options([
+                                        "cachorro" => "Cachorro",
+                                        "gato" => "Gato",
+                                        "passaro" => "Pássaro"
+                                    ])
                             ])
                     ])
             ]);
@@ -70,6 +79,11 @@ class PacienteResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+            ])
+            ->emptyStateDescription("Não há nenhum pet cadastrado")
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make()
+                    ->label("Novo Pet")
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

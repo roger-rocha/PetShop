@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Filament\Resources\PacienteResource\Pages;
+namespace App\Filament\Resources\ContaAReceberResource\Pages;
 
-use App\Filament\Resources\PacienteResource;
+use App\Filament\Resources\ContaAReceberResource;
 use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 
-class CreatePaciente extends CreateRecord
+class CreateContaAReceber extends CreateRecord
 {
-    protected static string $resource = PacienteResource::class;
+    protected static string $resource = ContaAReceberResource::class;
 
     protected function getRedirectUrl(): string
     {
@@ -25,13 +25,11 @@ class CreatePaciente extends CreateRecord
 
     protected function getCreatedNotification(): ?Notification
     {
-        $recipient = auth()->user();
-
         return Notification::make()
             ->success()
-            ->title('Paciente criado')
             ->color("success")
-            ->body('Paciente foi criado com sucesso!')
-            ->sendToDatabase($recipient);
+            ->title('Entrada criada')
+            ->body('Entrada foi criada com sucesso!')
+            ->sendToDatabase(auth()->user());
     }
 }

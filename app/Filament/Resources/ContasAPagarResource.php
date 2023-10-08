@@ -10,53 +10,61 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Leandrocfe\FilamentPtbrFormFields\Money;
 
 class ContasAPagarResource extends Resource
 {
     protected static ?string $model = ContasAPagar::class;
 
-    protected static ?string $tenantContasAPagarshipRelationshipName = 'ContasAPagar';
+    protected static ?string $label = 'Saída';
+    protected static ?string $modelLabel = 'Saídas';
+    protected static ?string $modelLabelPlural = 'Saídas';
+    protected static ?string $pluralLabel = 'Saídas';
+    protected static ?string $navigationLabel = 'Saídas';
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-arrow-trending-down';
+
+    protected static ?string $navigationGroup = 'Financeiro';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Section::make("Dados Cadastrais")
-                ->schema([
-                    Forms\Components\TextInput::make("nome")
-                        ->label("Nome")
-                        ->required(),
-                    Forms\Components\TextInput::make("preco")
-                        ->label("Preço")
-                        ->required(),
-                    Forms\Components\TextInput::make("valor_pago")
-                        ->label("Valor Pago")
-                        ->required(),
-                    Forms\Components\Select::make('tipo')
-                        ->searchable()
-                        ->preload()
-                        ->options([
-                            'Fornecedor' => 'Fornecedor',
-                            'Despesa Fixa' => 'Despesa Fixa',
-                            'Funcionarios' => 'Funcionários',
-                            'Outros' => 'Outros',
-                        ])
-                        ->required(),
-                    Forms\Components\DatePicker::make("data_vencimento")
-                        ->label("Data de Vencimento")
-                        ->displayFormat("d/m/Y")
-                        ->native(false)
-                        ->required(),
-                    Forms\Components\DatePicker::make("data_pagamento")
-                        ->label("Data de Pagamento")
-                        ->displayFormat("d/m/Y")
-                        ->native(false)
-                        ->required(),
-                ])
+                    ->schema([
+                        Forms\Components\Grid::make(3)
+                            ->schema([
+                                Forms\Components\TextInput::make("nome")
+                                    ->label("Nome")
+                                    ->required(),
+                                Money::make("preco")
+                                    ->label("Preço")
+                                    ->required(),
+                                Money::make("valor_pago")
+                                    ->label("Valor Pago")
+                                    ->required(),
+                                Forms\Components\Select::make('tipo')
+                                    ->searchable()
+                                    ->preload()
+                                    ->options([
+                                        'Fornecedor' => 'Fornecedor',
+                                        'Despesa Fixa' => 'Despesa Fixa',
+                                        'Funcionarios' => 'Funcionários',
+                                        'Outros' => 'Outros',
+                                    ])
+                                    ->required(),
+                                Forms\Components\DatePicker::make("data_vencimento")
+                                    ->label("Data de Vencimento")
+                                    ->displayFormat("d/m/Y")
+                                    ->native(false)
+                                    ->required(),
+                                Forms\Components\DatePicker::make("data_pagamento")
+                                    ->label("Data de Pagamento")
+                                    ->displayFormat("d/m/Y")
+                                    ->native(false)
+                                    ->required(),
+                            ])
+                    ])
             ]);
     }
 
@@ -95,20 +103,25 @@ class ContasAPagarResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
+            ->emptyStateDescription("Não há nenhuma saída cadastrada")
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make()
+                    ->label("Nova Saída")
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
     }
-    
+
     public static function getRelations(): array
     {
         return [
             //
         ];
     }
-    
+
     public static function getPages(): array
     {
         return [
@@ -116,5 +129,5 @@ class ContasAPagarResource extends Resource
             'create' => Pages\CreateContasAPagar::route('/create'),
             'edit' => Pages\EditContasAPagar::route('/{record}/edit'),
         ];
-    }    
+    }
 }

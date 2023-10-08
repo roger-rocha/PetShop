@@ -40,9 +40,19 @@ class Loja extends Model implements HasCurrentTenantLabel
         return $this->hasMany(Produto::class);
     }
 
-    public function contasAPagar(): HasMany
+    public function consultas(): HasMany
     {
-        return $this->hasMany(ContasAPagars::class);
+        return $this->hasMany(Consulta::class);
+    }
+
+    public function contasAPagars(): HasMany
+    {
+        return $this->hasMany(ContasAPagar::class);
+    }
+
+    public function contasARecebers(): HasMany
+    {
+        return $this->hasMany(ContasAReceber::class);
     }
 
     public function getFilamentAvatarUrl(): ?string
