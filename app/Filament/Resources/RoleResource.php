@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\RoleResource\Pages;
 use App\Models\Role;
-use Filament\Forms\Components\Section;
+use Filament\Facades\Filament;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -23,18 +23,18 @@ class RoleResource extends Resource
 
     protected static ?string $modelLabel = 'Funções';
 
-    protected static ?string $navigationGroup = 'Admin';
+    protected static ?string $navigationGroup = 'Usuários';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 TextInput::make('title')
-                        ->label('Título')
-                        ->required()
-                        ->maxLength(255)
-                        ->columnSpanFull()
-                        ->disabled(fn (Get $get) => $get('title') === 'Super' || $get('title') === 'Inativo'),
+                    ->label('Título')
+                    ->required()
+                    ->maxLength(255)
+                    ->columnSpanFull()
+                    ->disabled(fn(Get $get) => $get('title') === 'Super' || $get('title') === 'Inativo'),
 
                 Select::make('users')
                     ->label('Usuários')
@@ -45,11 +45,13 @@ class RoleResource extends Resource
                     ->relationship(
                         name: 'users',
                         titleAttribute: 'name',
-                        modifyQueryUsing: fn (Builder $query) => Auth()->user()->hasRole('Super') ? null : $query->whereDoesntHave('roles', function ($query) {
+                        modifyQueryUsing: fn(Builder $query) => Auth()->user()->hasRole('Super') ? null : $query->whereDoesntHave('roles', function ($query) {
                             $query->where('title', '=', 'Super');
+                        })->whereHas('lojas', function ($query) {
+                            $query->where('loja_id', Filament::getTenant()->id);
                         })
                     )
-                    ->disabled(fn (Get $get) => $get('title') === 'Super'),
+                    ->disabled(fn(Get $get) => $get('title') === 'Super'),
 
                 Select::make('Permissões')
                     ->label('Permissões')
@@ -58,10 +60,10 @@ class RoleResource extends Resource
                     ->preload()
                     ->columnSpanFull()
                     ->relationship(name: 'permissions', titleAttribute: 'description',
-                        modifyQueryUsing: fn (Builder $query) => $query->whereIn('id', Auth()->user()->roles->flatMap->permissions->pluck('id'))
+                        modifyQueryUsing: fn(Builder $query) => $query->whereIn('id', Auth()->user()->roles->flatMap->permissions->pluck('id'))
                     )
-                    ->hidden(fn (Get $get) => $get('title') === 'Inativo')
-                    ->disabled(fn (Get $get) => $get('title') === 'Super'),
+                    ->hidden(fn(Get $get) => $get('title') === 'Inativo')
+                    ->disabled(fn(Get $get) => $get('title') === 'Super'),
 
             ]);
     }
@@ -74,7 +76,9 @@ class RoleResource extends Resource
                 Tables\Columns\TextColumn::make('title')
                     ->label('Título')
                     ->searchable(),
-                TextColumn::make('users_count')->counts('users')->label('Total de usuários'),
+                TextColumn::make('users_count')
+                    ->counts('users')
+                    ->label('Total de usuários'),
                 TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()

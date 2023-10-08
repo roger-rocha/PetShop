@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Super\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
+use App\Filament\Super\Resources\UserResource\Pages;
+use App\Filament\Super\Resources\UserResource\RelationManagers\LojasRelationManager;
 use App\Models\User;
-use Filament\Facades\Filament;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Group;
@@ -30,7 +30,7 @@ use Illuminate\Support\Facades\Hash;
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
-    protected static ?string $tenantOwnershipRelationshipName = 'lojas';
+
     protected static ?string $navigationIcon = 'heroicon-o-user';
     protected static ?string $modelLabel = 'Usuários';
     protected static ?string $navigationGroup = 'Usuários';
@@ -170,13 +170,7 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
-            ->query(User::query()
-                ->whereDoesntHave('roles', function ($query) {
-                    $query->where('title', 'Super');
-                })->whereHas('lojas', function ($query) {
-                    $query->where('loja_id', Filament::getTenant()?->id);
-                })
-            )->columns([
+            ->columns([
                 ImageColumn::make('avatar_url')
                     ->label('Foto')
                     ->disk('local')
@@ -255,6 +249,13 @@ class UserResource extends Resource
             ->emptyStateActions([
                 Tables\Actions\CreateAction::make(),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            LojasRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

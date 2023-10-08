@@ -7,7 +7,6 @@ use App\Filament\Pages\Auth\Login;
 use App\Filament\Pages\Tenancy\EditTeamProfile;
 use App\Filament\Pages\Tenancy\RegisterTeam;
 use App\Models\Loja;
-use BezhanSalleh\FilamentExceptions\FilamentExceptionsPlugin;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -25,7 +24,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Maartenpaauw\Filament\Cashier\Stripe\BillingProvider;
 use pxlrbt\FilamentEnvironmentIndicator\EnvironmentIndicatorPlugin;
-use ShuvroRoy\FilamentSpatieLaravelBackup\FilamentSpatieLaravelBackupPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -34,9 +32,9 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
-            ->favicon(asset('images/favicon.png'))
-            ->path('')
+            ->path('admin')
             ->brandName("PetShop")
+            ->favicon(asset('images/paw-solid.svg'))
             ->tenant(Loja::class)
             ->tenantRegistration(RegisterTeam::class)
             ->tenantProfile(EditTeamProfile::class)
@@ -75,8 +73,6 @@ class AdminPanelProvider extends PanelProvider
                     ->visible(fn() => app()->environment(['local', 'testing', 'hml', 'homologacao', 'staging', 'development']))
                     ->showBorder(false)
                     ->visible(true),
-                FilamentExceptionsPlugin::make(),
-                FilamentSpatieLaravelBackupPlugin::make()
             ])
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
@@ -103,7 +99,6 @@ class AdminPanelProvider extends PanelProvider
             ->authPasswordBroker('users')
             ->navigationGroups([
                 'Usuários',
-                'Admin',
             ])
             ->databaseNotifications()
             ->databaseNotificationsPolling('30s')

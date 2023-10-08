@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Filament\Resources\UserResource\Pages;
+namespace App\Filament\Super\Resources\UserResource\Pages;
 
-use App\Filament\Resources\UserResource;
+use App\Filament\Super\Resources\UserResource;
 use App\Models\User;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
