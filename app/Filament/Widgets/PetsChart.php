@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\Paciente;
 use Carbon\Carbon;
+use Filament\Facades\Filament;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
@@ -17,7 +18,7 @@ class PetsChart extends ChartWidget
     protected function getData(): array
     {
         setlocale(LC_TIME, 'pt_BR.utf8');
-        $data = Trend::model(Paciente::class)
+        $data = Trend::query(Paciente::query()->where('loja_id', Filament::getTenant()->id))
             ->between(
                 start: now()->startOfYear(),
                 end: now()->endOfYear(),

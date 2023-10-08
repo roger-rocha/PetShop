@@ -53,7 +53,7 @@ class ContaAReceberResource extends Resource
                                     ->native(false)
                                     ->options([
                                         'Cliente' => 'Cliente',
-                                        'Compra' => 'Compra',
+                                        'Venda' => 'Venda',
                                         'Consulta' => 'Consulta',
                                         'Outros' => 'Outros',
                                     ]),
@@ -86,7 +86,7 @@ class ContaAReceberResource extends Resource
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'Cliente' => 'gray',
-                        'Compra' => 'warning',
+                        'Venda' => 'warning',
                         'Consulta' => 'success',
                         'Outros' => 'danger',
                     }),
@@ -96,7 +96,7 @@ class ContaAReceberResource extends Resource
                     ->sortable()
                     ->formatStateUsing(fn(string $state): string => 'R$ ' . number_format($state, 2, ',', '.')),
                 Tables\Columns\TextColumn::make('valor_pago')
-                    ->label("Preço")
+                    ->label("Preço Pago")
                     ->searchable()
                     ->sortable()
                     ->formatStateUsing(fn(string $state): string => 'R$ ' . number_format($state, 2, ',', '.')),

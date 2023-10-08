@@ -4,6 +4,7 @@ namespace App\Filament\Widgets;
 
 use App\Models\Consulta;
 use Carbon\Carbon;
+use Filament\Facades\Filament;
 use Filament\Widgets\ChartWidget;
 use Flowframe\Trend\Trend;
 use Flowframe\Trend\TrendValue;
@@ -16,7 +17,7 @@ class ConsultasChart extends ChartWidget
 
     protected function getData(): array
     {
-        $data = Trend::model(Consulta::class)
+        $data = Trend::query(Consulta::query()->where('loja_id', Filament::getTenant()->id))
             ->dateColumn('data')
             ->between(
                 start: now()->startOfMonth(),
