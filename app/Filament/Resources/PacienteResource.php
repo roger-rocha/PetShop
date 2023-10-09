@@ -20,6 +20,7 @@ class PacienteResource extends Resource
     protected static ?string $pluralLabel = 'Pets';
 
     protected static ?string $navigationIcon = 'heroicon-o-heart';
+
     protected static ?string $navigationGroup = 'Pets';
 
     public static function form(Form $form): Form

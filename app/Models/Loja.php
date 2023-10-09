@@ -18,6 +18,8 @@ class Loja extends Model implements HasCurrentTenantLabel
 
     protected $fillable = [
         "name",
+        "phone",
+        "email",
         "endereco",
         "cep",
         "cidade",
