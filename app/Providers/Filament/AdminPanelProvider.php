@@ -39,7 +39,7 @@ class AdminPanelProvider extends PanelProvider
             ->tenantRegistration(RegisterTeam::class)
             ->tenantProfile(EditTeamProfile::class)
             ->tenantBillingProvider(new BillingProvider('basic'))
-            //->requiresTenantSubscription()
+            ->requiresTenantSubscription()
             ->login(Login::class)
             ->profile(EditProfile::class)
             ->sidebarCollapsibleOnDesktop()
