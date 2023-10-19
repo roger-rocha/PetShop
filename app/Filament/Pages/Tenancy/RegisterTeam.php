@@ -19,12 +19,25 @@ class RegisterTeam extends RegisterTenant
     {
         return $form
             ->schema([
-                TextInput::make('name'),
-                TextInput::make('endereco'),
-                TextInput::make('cep'),
-                TextInput::make('cidade'),
-                TextInput::make('estado'),
-                TextInput::make('bairro'),
+                TextInput::make('name')
+                    ->name('Nome da loja')
+                    ->required(),
+                TextInput::make('phone')
+                    ->name('telefone')
+                    ->required(),
+                TextInput::make('email')
+                    ->email()
+                    ->required(),
+                TextInput::make('endereco')
+                    ->required(),
+                TextInput::make('cep')
+                    ->required(),
+                TextInput::make('cidade')
+                    ->required(),
+                TextInput::make('estado')
+                    ->required(),
+                TextInput::make('bairro')
+                    ->required(),
             ]);
     }
 
